@@ -1,15 +1,16 @@
 import { ButtonLink } from '@/components/public/button-link';
 import { GrowthRings } from '@/components/public/growth-rings';
+import { ResponsiveImage } from '@/components/public/responsive-image';
 import { contact } from '@/routes';
-import products from '@/routes/products';
+import type { ImageData } from '@/types/catalog';
 
 export type HeroContent = {
     title: string;
     subtitle?: string | null;
     primary_label: string;
     secondary_label?: string | null;
-    image?: string | null;
-    image_alt?: string | null;
+    /** Sprint 7 : objet image (src, srcset, alt) envoyé par ContentRepository */
+    image?: ImageData | null;
 };
 
 /**
@@ -18,16 +19,23 @@ export type HeroContent = {
  * Un voile brun garde le texte lisible. Sans photo : fond brun et cernes du bois, jamais une image inventée.
  * Le SEUL mouvement automatique du site : le fond apparaît en fondu, puis le titre ligne par ligne.
  */
-export function Hero({ content }: { content: HeroContent }) {
+export function Hero({
+    content,
+    productsAnchor,
+}: {
+    content: HeroContent;
+    /** Sprint 7 (CDC §7.1) : « #prodotti » si la section produits est visible, sinon « /prodotti » */
+    productsAnchor: string;
+}) {
     return (
         <section className="relative isolate flex min-h-[34rem] items-end overflow-hidden bg-legno-900 text-crema-50 md:items-center lg:min-h-[min(82svh,46rem)]">
             <div className="absolute inset-0 -z-10 animate-hero-bg">
                 {content.image ? (
-                    <img
-                        src={content.image}
-                        alt={content.image_alt ?? ''}
+                    <ResponsiveImage
+                        image={content.image}
+                        priority
+                        sizes="100vw"
                         className="size-full object-cover"
-                        fetchPriority="high"
                     />
                 ) : (
                     <GrowthRings className="absolute top-1/2 -right-1/2 size-[140%] -translate-y-1/2 text-brace-500/35 md:-right-[15%] md:size-[85%]" />
@@ -48,7 +56,11 @@ export function Hero({ content }: { content: HeroContent }) {
                         </p>
                     )}
                     <div className="mt-10 flex animate-hero-line flex-col gap-3 [animation-delay:700ms] sm:flex-row">
-                        <ButtonLink href={products.index().url} variant="light">
+                        <ButtonLink
+                            href={productsAnchor}
+                            external={productsAnchor.startsWith('#')}
+                            variant="light"
+                        >
                             {content.primary_label}
                         </ButtonLink>
                         {content.secondary_label && (

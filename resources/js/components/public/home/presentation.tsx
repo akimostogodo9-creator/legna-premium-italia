@@ -1,10 +1,12 @@
+import { ResponsiveImage } from '@/components/public/responsive-image';
 import { RichText } from '@/components/public/rich-text';
+import type { ImageData } from '@/types/catalog';
 
 export type PresentationContent = {
     title: string;
     text?: string | null;
-    image?: string | null;
-    image_alt?: string | null;
+    /** Sprint 7 : objet image (src, srcset, alt) */
+    image?: ImageData | null;
 };
 
 // F-HOME-02 : présentation de l'entreprise — texte à gauche, photo décalée à droite (si fournie)
@@ -22,10 +24,9 @@ export function Presentation({ content }: { content: PresentationContent }) {
                     />
                 </div>
                 {content.image && (
-                    <img
-                        src={content.image}
-                        alt={content.image_alt ?? ''}
-                        loading="lazy"
+                    <ResponsiveImage
+                        image={content.image}
+                        sizes="(min-width: 1024px) 45vw, 100vw"
                         className="aspect-[4/3] w-full rounded-[var(--radius-photo)] object-cover lg:translate-y-10"
                     />
                 )}

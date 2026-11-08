@@ -109,4 +109,10 @@ return [
         'email_label' => 'Indirizzo email',
         'message_label' => 'Messaggio',
     ],
+
+    // Sprint 7 : accueil complet
+    'home' => [
+        'see_all' => 'Vedi tutti i prodotti',
+        'faq_all' => 'Tutte le domande',
+    ],
 ];

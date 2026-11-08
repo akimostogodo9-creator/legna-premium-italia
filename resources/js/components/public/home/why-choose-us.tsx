@@ -1,4 +1,11 @@
-import { Award, Handshake, MessageCircle, Truck } from 'lucide-react';
+import {
+    Award,
+    Flame,
+    Handshake,
+    Leaf,
+    MessageCircle,
+    Truck,
+} from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 type Item = { icon?: string; title: string; text?: string | null };
@@ -10,6 +17,9 @@ const icons: Record<string, LucideIcon> = {
     trust: Handshake,
     delivery: Truck,
     support: MessageCircle,
+    // Sprint 7 : icônes supplémentaires proposées dans l'admin
+    nature: Leaf,
+    warmth: Flame,
 };
 
 /**

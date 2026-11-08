@@ -305,3 +305,11 @@
         text-decoration: underline;
     }
 }
+
+/* Sprint 7 : « Scopri i prodotti » descend en douceur vers la section produits
+   (seulement si l'ordinateur n'a pas demandé moins d'animations) */
+@media (prefers-reduced-motion: no-preference) {
+    html:has(.site) {
+        scroll-behavior: smooth;
+    }
+}

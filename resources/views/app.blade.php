@@ -11,9 +11,25 @@
             }
         </style>
 
-        <link rel="icon" href="/favicon.ico" sizes="any">
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        {{-- Sprint 7 (F-ACONT-05) : icône et image de partage envoyées depuis l'admin, sinon celles par défaut --}}
+        @php
+            $legnaSettings = app(\App\Services\Settings\SettingsService::class);
+            $legnaDisk = \Illuminate\Support\Facades\Storage::disk('public');
+            $legnaFavicon = $legnaSettings->get('favicon');
+            $legnaShareImage = $legnaSettings->get('default_share_image');
+        @endphp
+        @if ($legnaFavicon)
+            <link rel="icon" type="image/png" href="{{ $legnaDisk->url($legnaFavicon) }}">
+            <link rel="apple-touch-icon" href="{{ $legnaDisk->url($legnaFavicon) }}">
+        @else
+            <link rel="icon" href="/favicon.ico" sizes="any">
+            <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+            <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        @endif
+        @if ($legnaShareImage && ! request()->is('admin', 'admin/*'))
+            {{-- head-key « og:image » : une fiche produit remplace cette image par sa propre photo --}}
+            <meta property="og:image" content="{{ $legnaDisk->url($legnaShareImage) }}" data-inertia="og:image">
+        @endif
 
         @fonts
 

@@ -3,11 +3,11 @@
 namespace App\Services\Content;
 
 use App\Models\ContentSection;
-use Illuminate\Support\Facades\Storage;
+use App\Support\ImagePresenter;
 
 /**
  * Lecture des sections de contenu visibles d'une page (R-CONTENU-01) — sprint 3.
- * Les champs « image » sont convertis en URL publique.
+ * Les champs « image » deviennent un objet image (src, srcset, alt) — sprint 7.
  */
 class ContentRepository
 {
@@ -27,6 +27,8 @@ class ContentRepository
     }
 
     /**
+     * Sprint 7 : champs « image » → objet image (src, srcset, alt) prêt pour <ResponsiveImage>.
+     *
      * @param  array<string, mixed>  $content
      * @return array<string, mixed>
      */
@@ -36,7 +38,8 @@ class ContentRepository
 
         foreach ($fields as $name => $type) {
             if ($type === 'image') {
-                $content[$name] = ! empty($content[$name]) ? Storage::disk('public')->url($content[$name]) : null;
+                $alt = (string) ($content[$name.'_alt'] ?? $content['image_alt'] ?? '');
+                $content[$name] = ImagePresenter::fromPath($content[$name] ?? null, $alt);
             }
         }
 

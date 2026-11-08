@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ContentSectionController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\IdentityController;
 use App\Http\Controllers\Admin\PlaceholderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductImageController;
@@ -72,11 +74,19 @@ Route::middleware(['auth', 'admin.active'])->group(function () {
     Route::get('/impostazioni', [SettingController::class, 'index'])->name('settings.index');
     Route::put('/impostazioni/contatti-e-ordini', [SettingController::class, 'updateOrder'])->name('settings.order');
 
+    // Contenus (F-ACONT) — sprint 7. « identita » déclaré AVANT « {section} »
+    Route::get('/contenuti', [ContentSectionController::class, 'index'])->name('content.index');
+    Route::get('/contenuti/identita', [IdentityController::class, 'edit'])->name('identity.edit');
+    Route::post('/contenuti/identita', [IdentityController::class, 'update'])->name('identity.update');
+    Route::get('/contenuti/{section}', [ContentSectionController::class, 'edit'])->name('content.edit')->whereNumber('section');
+    Route::post('/contenuti/{section}', [ContentSectionController::class, 'update'])->name('content.update')->whereNumber('section'); // POST : fichiers
+    Route::patch('/contenuti/{section}/visibilita', [ContentSectionController::class, 'toggleVisibility'])->name('content.visibility')->whereNumber('section');
+
     // Sections des sprints suivants : page provisoire (remplacée au fur et à mesure)
     // Sprint 4 : « prodotti » et « categorie » ont leurs vraies pages (plus haut)
-    // Sprint 6 : « impostazioni » a sa vraie page (plus haut)
+    // Sprints 6-7 : « impostazioni » et « contenuti » ont leurs vraies pages (plus haut)
     foreach ([
-        'contenuti' => 'content', 'faq' => 'faq', 'pagine-legali' => 'legal', 'messaggi' => 'messages',
+        'faq' => 'faq', 'pagine-legali' => 'legal', 'messaggi' => 'messages',
     ] as $uri => $name) {
         Route::get("/{$uri}", PlaceholderController::class)->name("{$name}.index")->defaults('section', $name);
     }

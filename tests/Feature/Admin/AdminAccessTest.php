@@ -68,8 +68,8 @@ class AdminAccessTest extends TestCase
     public function test_les_sections_futures_affichent_la_page_provisoire(): void
     {
         $this->actingAs(User::factory()->create())
-            ->get('/admin/contenuti') // sprint 4 : « prodotti » a maintenant sa vraie page
-            ->assertInertia(fn ($page) => $page->component('admin/placeholder')->where('section', 'content'));
+            ->get('/admin/faq') // sprint 7 : « contenuti » a maintenant sa vraie page
+            ->assertInertia(fn ($page) => $page->component('admin/placeholder')->where('section', 'faq'));
     }
 
     public function test_les_pages_de_parametres_du_kit_n_existent_plus(): void

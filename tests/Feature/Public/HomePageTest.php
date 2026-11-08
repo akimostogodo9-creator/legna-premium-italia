@@ -3,7 +3,10 @@
 namespace Tests\Feature\Public;
 
 use App\Models\ContentSection;
+use App\Models\Product;
+use App\Models\ProductImage;
 use Database\Seeders\ContentSectionSeeder;
+use Database\Seeders\FaqSeeder;
 use Database\Seeders\LegalPageSeeder;
 use Database\Seeders\SettingSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -85,5 +88,32 @@ class HomePageTest extends TestCase
         foreach (['/carrello', '/cart', '/checkout', '/pagamento'] as $url) {
             $this->get($url)->assertNotFound();
         }
+    }
+
+    public function test_produits_en_evidence_et_section_masquee(): void
+    {
+        // Sprint 7 : R-ORD-02, F-HOME-03
+        $product = Product::factory()->active()->create(['is_featured' => true]);
+        ProductImage::factory()->for($product)->main()->create();
+
+        $this->get('/')->assertInertia(fn ($page) => $page->has('featured', 1)->where('featured.0.id', $product->id));
+
+        ContentSection::where('page', 'home')->where('key', 'prodotti')->update(['is_visible' => false]);
+
+        $this->get('/')->assertInertia(fn ($page) => $page->missing('sections.prodotti')->where('featured', []));
+    }
+
+    public function test_faq_de_l_accueil(): void
+    {
+        // Sprint 7 : seule « Come posso ordinare? » est active ET « mostra in Home »
+        $this->seed(FaqSeeder::class);
+
+        $this->get('/')->assertInertia(fn ($page) => $page->has('faqs', 1));
+    }
+
+    public function test_livraison_absente_sans_resume(): void
+    {
+        // R-LIV-04 : rien d'inventé, la section n'a rien à afficher
+        $this->get('/')->assertInertia(fn ($page) => $page->where('deliverySummary', null));
     }
 }
