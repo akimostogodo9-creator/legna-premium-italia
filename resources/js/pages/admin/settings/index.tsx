@@ -21,9 +21,24 @@ type Props = {
         contact_rate_limit_per_hour?: number | null;
         contact_retention_months?: number | null;
     };
+    catalog: {
+        show_indicative_price_notice?: boolean | null;
+        products_per_page?: number | null;
+        featured_count?: number | null;
+        image_max_mb?: number | null;
+        view_dedup_minutes?: number | null;
+    };
     variables: string[];
     sample: Record<string, string>;
 };
+
+// Sprint 10 : champs numériques de la section « Catalogo » (valeur par défaut, minimum, maximum)
+const CATALOG_NUMBERS = [
+    ['products_per_page', 12, 3, 48],
+    ['featured_count', 4, 1, 12],
+    ['image_max_mb', 8, 1, 20],
+    ['view_dedup_minutes', 30, 5, 1440],
+] as const;
 
 // Sprint 8 (F-ASET-01) : données de l'entreprise — formulaire séparé, enregistré à part
 const COMPANY_FIELDS = [
@@ -54,6 +69,7 @@ export default function SettingsIndex({
     values,
     company: companyValues,
     form: formValues,
+    catalog: catalogValues,
     variables,
     sample,
 }: Props) {
@@ -90,10 +106,26 @@ export default function SettingsIndex({
         ),
     });
 
+    // Sprint 10 (F-ASET-05) : catalogue, images et statistiques — quatrième formulaire indépendant
+    const catalogForm = useForm({
+        show_indicative_price_notice:
+            catalogValues.show_indicative_price_notice ?? true,
+        products_per_page: String(catalogValues.products_per_page ?? 12),
+        featured_count: String(catalogValues.featured_count ?? 4),
+        image_max_mb: String(catalogValues.image_max_mb ?? 8),
+        view_dedup_minutes: String(catalogValues.view_dedup_minutes ?? 30),
+    });
+
+    const submitCatalog = (event: FormEvent) => {
+        event.preventDefault();
+        catalogForm.submit(settingsRoutes.catalog(), { preserveScroll: true });
+    };
+
     useUnsavedChangesWarning(
         (form.isDirty && !form.processing) ||
             (company.isDirty && !company.processing) ||
-            (contactForm.isDirty && !contactForm.processing),
+            (contactForm.isDirty && !contactForm.processing) ||
+            (catalogForm.isDirty && !catalogForm.processing),
     );
 
     const submitContactForm = (event: FormEvent) => {
@@ -134,7 +166,34 @@ export default function SettingsIndex({
                     {t('settings.title')}
                 </h1>
 
-                <form onSubmit={submitCompany} className="grid gap-5">
+                {/* Sprint 10 : sommaire de la page (4 formulaires indépendants) */}
+                <nav
+                    aria-label={t('settings.sections')}
+                    className="flex flex-wrap gap-2 text-sm"
+                >
+                    {(
+                        [
+                            ['#azienda', t('settings.company')],
+                            ['#modulo', t('settings.form')],
+                            ['#catalogo', t('settings.catalog')],
+                            ['#contatti', t('settings.contacts')],
+                        ] as const
+                    ).map(([href, label]) => (
+                        <a
+                            key={href}
+                            href={href}
+                            className="rounded-full border px-3 py-1 hover:bg-muted"
+                        >
+                            {label}
+                        </a>
+                    ))}
+                </nav>
+
+                <form
+                    id="azienda"
+                    onSubmit={submitCompany}
+                    className="grid scroll-mt-6 gap-5"
+                >
                     <h2 className="text-lg font-semibold">
                         {t('settings.company')}
                     </h2>
@@ -177,8 +236,9 @@ export default function SettingsIndex({
                 </form>
 
                 <form
+                    id="modulo"
                     onSubmit={submitContactForm}
-                    className="grid gap-5 border-t pt-10"
+                    className="grid scroll-mt-6 gap-5 border-t pt-10"
                 >
                     <h2 className="text-lg font-semibold">
                         {t('settings.form')}
@@ -236,8 +296,59 @@ export default function SettingsIndex({
                 </form>
 
                 <form
+                    id="catalogo"
+                    onSubmit={submitCatalog}
+                    className="grid scroll-mt-6 gap-5 border-t pt-10"
+                >
+                    <h2 className="text-lg font-semibold">
+                        {t('settings.catalog')}
+                    </h2>
+                    <CheckboxField
+                        id="show_indicative_price_notice"
+                        label={t('settings.show_indicative_price_notice')}
+                        checked={catalogForm.data.show_indicative_price_notice}
+                        onChange={(v) =>
+                            catalogForm.setData(
+                                'show_indicative_price_notice',
+                                v,
+                            )
+                        }
+                    />
+                    <div className="grid gap-5 sm:grid-cols-2">
+                        {CATALOG_NUMBERS.map(([key, , min, max]) => (
+                            <TextField
+                                key={key}
+                                id={key}
+                                type="number"
+                                min={min}
+                                max={max}
+                                label={t(`settings.${key}`)}
+                                hint={
+                                    key === 'image_max_mb'
+                                        ? t('settings.image_max_hint')
+                                        : undefined
+                                }
+                                value={catalogForm.data[key]}
+                                onChange={(e) =>
+                                    catalogForm.setData(key, e.target.value)
+                                }
+                                error={catalogForm.errors[key]}
+                            />
+                        ))}
+                    </div>
+                    <Button
+                        type="submit"
+                        className="self-start"
+                        disabled={catalogForm.processing}
+                    >
+                        {t('actions.save')}
+                    </Button>
+                </form>
+
+                <form
+                    id="contatti"
                     onSubmit={submit}
-                    className="flex flex-col gap-10 border-t pt-10"
+                    className="flex scroll-mt-6 flex-col gap-10 border-t pt-10"
                 >
                     <section className="grid gap-5">
                         <h2 className="text-lg font-semibold">

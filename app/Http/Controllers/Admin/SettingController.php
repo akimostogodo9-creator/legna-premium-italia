@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 
-// F-ASET-01 (azienda, sprint 8) et F-ASET-02/03/04/07 (contacts et modèles, sprint 6) — catalogo, modulo… au sprint 10
+// Paramètres : azienda (S8), contacts et modèles (S6), modulo di contatto (S9), catalogo/immagini/statistiche (S10)
 class SettingController extends Controller
 {
     public function __construct(private readonly SettingsService $settings) {}
@@ -29,6 +29,12 @@ class SettingController extends Controller
             'company' => $this->settings->group('azienda'),
             // Sprint 9 : formulaire de contact (activation, limite, conservation)
             'form' => $this->settings->group('modulo'),
+            // Sprint 10 : catalogue, images et statistiques
+            'catalog' => [
+                ...$this->settings->group('catalogo'),
+                ...$this->settings->group('immagini'),
+                ...$this->settings->group('statistiche'),
+            ],
             'variables' => TemplateRenderer::VARIABLES,
             // Valeurs d'exemple pour l'aperçu uniquement (jamais affichées sur le site)
             'sample' => [
@@ -70,6 +76,27 @@ class SettingController extends Controller
         ]);
 
         $this->settings->setMany([...$data, 'contact_form_enabled' => $request->boolean('contact_form_enabled')]);
+
+        return back()->with('success', __('admin.messages.saved'));
+    }
+
+    /** F-ASET-05 (sprint 10) : catalogue, images et statistiques */
+    public function updateCatalog(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'products_per_page' => ['required', 'integer', 'min:3', 'max:48'],
+            'featured_count' => ['required', 'integer', 'min:1', 'max:12'],
+            // Ne pas dépasser upload_max_filesize du serveur (10 Mo sur ce poste)
+            'image_max_mb' => ['required', 'integer', 'min:1', 'max:20'],
+            'view_dedup_minutes' => ['required', 'integer', 'min:5', 'max:1440'],
+        ], [], collect(['products_per_page', 'featured_count', 'image_max_mb', 'view_dedup_minutes'])
+            ->mapWithKeys(fn (string $key) => [$key => __('admin.settings.'.$key)])
+            ->all());
+
+        $this->settings->setMany([
+            ...$data,
+            'show_indicative_price_notice' => $request->boolean('show_indicative_price_notice'),
+        ]);
 
         return back()->with('success', __('admin.messages.saved'));
     }

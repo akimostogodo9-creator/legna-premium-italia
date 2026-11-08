@@ -11,6 +11,7 @@ use App\Models\Product;
 use App\Services\Catalog\CatalogQuery;
 use App\Services\Content\ContentRepository;
 use App\Services\Settings\SettingsService;
+use App\Services\Stats\StatsRecorder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -45,6 +46,11 @@ class ProductController extends Controller
         $visible = Product::visible()->whereKey($product->id)->exists();
         $isAdmin = (bool) $request->user()?->is_active;
         abort_unless($visible || $isAdmin, 404);
+
+        // F-STAT-01 (sprint 10) : seulement pour les visiteurs (pas l'aperçu ni la visite d'un admin connecté)
+        if ($visible && $request->user() === null) {
+            app(StatsRecorder::class)->recordView($product, $request->ip(), $request->userAgent());
+        }
 
         $product->load(['category', 'saleUnit', 'images', 'mainImageRelation']);
 

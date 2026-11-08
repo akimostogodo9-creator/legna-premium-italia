@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Services\Stats\StatsRecorder;
+use App\Support\BotDetector;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
@@ -19,16 +20,11 @@ class StatsController extends Controller
             'type' => ['required', Rule::in(['order', 'whatsapp'])],
         ]);
 
-        if (! $this->isBot($request)) {
+        // Sprint 10 : détection des robots commune (BotDetector)
+        if (! BotDetector::isBot($request->userAgent())) {
             $stats->increment(Product::findOrFail($data['product_id']), $data['type']);
         }
 
         return response()->noContent();
-    }
-
-    /** R-STAT-04 : les robots connus ne sont pas comptés. */
-    private function isBot(Request $request): bool
-    {
-        return (bool) preg_match('/bot|crawl|spider|slurp|facebookexternalhit|preview|headless/i', (string) $request->userAgent());
     }
 }

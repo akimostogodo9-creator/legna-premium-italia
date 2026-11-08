@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 */
 Route::middleware(['auth', 'admin.active'])->group(function () {
 
-    // F-DASH : provisoire, complété au sprint 10
+    // F-DASH : tableau de bord (sprint 10)
     Route::get('/', DashboardController::class)->name('dashboard');
 
     // Comptes administrateurs (F-AUSR-01/02)
@@ -77,6 +77,7 @@ Route::middleware(['auth', 'admin.active'])->group(function () {
     Route::put('/impostazioni/contatti-e-ordini', [SettingController::class, 'updateOrder'])->name('settings.order');
     Route::put('/impostazioni/azienda', [SettingController::class, 'updateCompany'])->name('settings.company'); // sprint 8
     Route::put('/impostazioni/modulo', [SettingController::class, 'updateForm'])->name('settings.form'); // sprint 9
+    Route::put('/impostazioni/catalogo', [SettingController::class, 'updateCatalog'])->name('settings.catalog'); // sprint 10
 
     // Contenus (F-ACONT) — sprint 7. « identita » déclaré AVANT « {section} »
     Route::get('/contenuti', [ContentSectionController::class, 'index'])->name('content.index');
