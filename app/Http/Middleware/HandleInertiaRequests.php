@@ -27,20 +27,37 @@ class HandleInertiaRequests extends Middleware
     }
 
     /**
-     * Define the props that are shared by default.
-     *
-     * @see https://inertiajs.com/shared-data
+     * Données envoyées à TOUTES les pages (étape 5 §6) — sprint 2.
+     * ⚠️ Tout ce qui est ici est visible dans le code source de la page : jamais de secret.
      *
      * @return array<string, mixed>
      */
     public function share(Request $request): array
     {
+        $isAdmin = $request->routeIs('admin.*') || $request->is('admin', 'admin/*');
+
         return [
             ...parent::share($request),
-            'name' => config('app.name'),
-            'auth' => [
-                'user' => $request->user(),
+
+            'site' => [
+                'name' => config('app.name'),
+                // Coordonnées publiques : seulement si renseignées (R-CONTENU-03) — complété au sprint 3
             ],
+
+            // Textes d'interface de l'espace courant (lang/it/admin.php ou public.php)
+            'translations' => fn () => trans($isAdmin ? 'admin' : 'public'),
+
+            // Uniquement les champs nécessaires de l'admin connecté (jamais le modèle entier)
+            'auth' => [
+                'user' => fn () => $request->user()?->only(['id', 'name', 'email']),
+            ],
+
+            'flash' => [
+                'success' => fn () => $request->session()->get('success'),
+                'error' => fn () => $request->session()->get('error'),
+            ],
+
+            // État du menu latéral (kit)
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }

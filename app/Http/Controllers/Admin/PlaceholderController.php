@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
+
+// Page « bientôt disponible » pour les sections des sprints suivants
+class PlaceholderController extends Controller
+{
+    public function __invoke(Request $request): Response
+    {
+        return Inertia::render('admin/placeholder', [
+            'section' => $request->route()->defaults['section'] ?? null,
+        ]);
+    }
+}

@@ -7,23 +7,23 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { useTranslations } from '@/lib/i18n';
 import { store } from '@/routes/login';
 import { request } from '@/routes/password';
-import PasskeyVerify from '@/components/passkey-verify';
 
 type Props = {
     status?: string;
     canResetPassword: boolean;
 };
 
-// Connexion à l'administration (/admin/accesso) — textes en italien (T6, sprint 0).
-// Ils passeront par t('…') au sprint 2 (lib/i18n.ts).
+// Connexion à l'administration (/admin/accesso) — textes via t() (sprint 2, T9).
+// R-ADM-01 : aucun lien d'inscription. Passkeys retirées (choix d'ISI, sprint 2).
 export default function Login({ status, canResetPassword }: Props) {
+    const t = useTranslations();
+
     return (
         <>
-            <Head title="Accedi" />
-
-            <PasskeyVerify />
+            <Head title={t('auth.login')} />
 
             <Form
                 {...store.form()}
@@ -31,71 +31,72 @@ export default function Login({ status, canResetPassword }: Props) {
                 className="flex flex-col gap-6"
             >
                 {({ processing, errors }) => (
-                    <>
-                        <div className="grid gap-6">
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">Email</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    name="email"
-                                    required
-                                    autoFocus
-                                    tabIndex={1}
-                                    autoComplete="email"
-                                    placeholder="email@esempio.it"
-                                    translate="no"
-                                />
-                                <InputError message={errors.email} />
-                            </div>
-
-                            <div className="grid gap-2">
-                                <div className="flex items-center">
-                                    <Label htmlFor="password">Password</Label>
-                                    {canResetPassword && (
-                                        <TextLink
-                                            href={request()}
-                                            className="ml-auto text-sm"
-                                            tabIndex={5}
-                                        >
-                                            Password dimenticata?
-                                        </TextLink>
-                                    )}
-                                </div>
-                                <PasswordInput
-                                    id="password"
-                                    name="password"
-                                    required
-                                    tabIndex={2}
-                                    autoComplete="current-password"
-                                    placeholder="Password"
-                                    translate="no"
-                                />
-                                <InputError message={errors.password} />
-                            </div>
-
-                            <div className="flex items-center space-x-3">
-                                <Checkbox
-                                    id="remember"
-                                    name="remember"
-                                    tabIndex={3}
-                                />
-                                <Label htmlFor="remember">Ricordami</Label>
-                            </div>
-
-                            <Button
-                                type="submit"
-                                className="mt-4 w-full"
-                                tabIndex={4}
-                                disabled={processing}
-                                data-test="login-button"
-                            >
-                                {processing && <Spinner />}
-                                Accedi
-                            </Button>
+                    <div className="grid gap-6">
+                        <div className="grid gap-2">
+                            <Label htmlFor="email">{t('auth.email')}</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                name="email"
+                                required
+                                autoFocus
+                                tabIndex={1}
+                                autoComplete="email"
+                                placeholder={t('auth.email_placeholder')}
+                                translate="no"
+                            />
+                            <InputError message={errors.email} />
                         </div>
-                        {/* R-ADM-01 : pas de lien d'inscription (T5, sprint 0) */}
-                    </>
+
+                        <div className="grid gap-2">
+                            <div className="flex items-center">
+                                <Label htmlFor="password">
+                                    {t('auth.password')}
+                                </Label>
+                                {canResetPassword && (
+                                    <TextLink
+                                        href={request()}
+                                        className="ml-auto text-sm"
+                                        tabIndex={5}
+                                    >
+                                        {t('auth.forgot')}
+                                    </TextLink>
+                                )}
+                            </div>
+                            <PasswordInput
+                                id="password"
+                                name="password"
+                                required
+                                tabIndex={2}
+                                autoComplete="current-password"
+                                placeholder={t('auth.password')}
+                                translate="no"
+                            />
+                            <InputError message={errors.password} />
+                        </div>
+
+                        <div className="flex items-center space-x-3">
+                            <Checkbox
+                                id="remember"
+                                name="remember"
+                                tabIndex={3}
+                            />
+                            <Label htmlFor="remember">
+                                {t('auth.remember')}
+                            </Label>
+                        </div>
+
+                        <Button
+                            type="submit"
+                            className="mt-4 w-full"
+                            tabIndex={4}
+                            disabled={processing}
+                            data-test="login-button"
+                        >
+                            {processing && <Spinner />}
+                            {t('auth.login')}
+                        </Button>
+                    </div>
                 )}
             </Form>
 
@@ -109,6 +110,6 @@ export default function Login({ status, canResetPassword }: Props) {
 }
 
 Login.layout = {
-    title: 'Accedi al pannello',
-    description: 'Inserisci email e password per accedere',
+    title: 'auth.login_title',
+    description: 'auth.login_description',
 };

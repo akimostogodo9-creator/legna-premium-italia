@@ -39,14 +39,14 @@ class AppServiceProvider extends ServiceProvider
             app()->isProduction(),
         );
 
-        Password::defaults(fn (): ?Password => app()->isProduction()
-            ? Password::min(12)
-                ->mixedCase()
-                ->letters()
-                ->numbers()
-                ->symbols()
-                ->uncompromised()
-            : null,
-        );
+        // Étape 7 (sprint 2) : 12 caractères minimum, lettres et chiffres, partout.
+        // En production, le kit ajoute majuscules, symboles et vérification des fuites connues.
+        Password::defaults(function (): Password {
+            $rule = Password::min(12)->letters()->numbers();
+
+            return app()->isProduction()
+                ? $rule->mixedCase()->symbols()->uncompromised()
+                : $rule;
+        });
     }
 }

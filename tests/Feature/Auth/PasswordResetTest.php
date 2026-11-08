@@ -67,8 +67,9 @@ class PasswordResetTest extends TestCase
             $response = $this->post(route('password.update'), [
                 'token' => $notification->token,
                 'email' => $user->email,
-                'password' => 'password',
-                'password_confirmation' => 'password',
+                // Sprint 2 : 12 caractères minimum, lettres et chiffres (étape 7)
+                'password' => 'nuova-password-123',
+                'password_confirmation' => 'nuova-password-123',
             ]);
 
             $response

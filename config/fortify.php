@@ -144,8 +144,6 @@ return [
 
     'limiters' => [
         'login' => 'login',
-        'two-factor' => 'two-factor',
-        'passkeys' => 'passkeys',
     ],
 
     /*
@@ -189,17 +187,11 @@ return [
     */
 
     // R-ADM-01 : aucune inscription publique → Features::registration() retiré (T5, sprint 0)
+    // Sprint 2 (choix d'ISI, conforme au dossier) : double authentification, passkeys et
+    // vérification d'e-mail du kit désactivées. Les comptes sont créés par un administrateur
+    // (e-mail déjà vérifié) et protégés par un mot de passe de 12 caractères + 5 essais/minute.
     'features' => [
         Features::resetPasswords(),
-        Features::emailVerification(),
-        Features::twoFactorAuthentication([
-            'confirm' => true,
-            'confirmPassword' => true,
-            // 'window' => 0
-        ]),
-        Features::passkeys([
-            'confirmPassword' => true,
-        ]),
     ],
 
 ];

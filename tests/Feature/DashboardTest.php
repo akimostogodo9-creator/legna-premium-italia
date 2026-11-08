@@ -18,6 +18,9 @@ class DashboardTest extends TestCase
 
     public function test_authenticated_users_can_visit_the_dashboard()
     {
+        // Pas besoin des fichiers compilés par Vite pour ce test (sprint 2)
+        $this->withoutVite();
+
         $user = User::factory()->create();
         $this->actingAs($user);
 

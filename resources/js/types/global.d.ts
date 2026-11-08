@@ -6,11 +6,14 @@ declare module 'react' {
     }
 }
 
+// Données partagées avec toutes les pages (HandleInertiaRequests::share) — sprint 2
 declare module '@inertiajs/core' {
     export interface InertiaConfig {
         sharedPageProps: {
-            name: string;
+            site: { name: string };
+            translations: Record<string, unknown>;
             auth: Auth;
+            flash: { success?: string | null; error?: string | null };
             sidebarOpen: boolean;
             [key: string]: unknown;
         };

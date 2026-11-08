@@ -1,9 +1,11 @@
+import { FlashMessages } from '@/components/admin/flash-messages';
 import { AppContent } from '@/components/app-content';
 import { AppShell } from '@/components/app-shell';
 import { AppSidebar } from '@/components/app-sidebar';
 import { AppSidebarHeader } from '@/components/app-sidebar-header';
 import type { AppLayoutProps } from '@/types';
 
+// Layout de l'administration : menu latéral + messages de confirmation (sprint 2, §6.3)
 export default function AppSidebarLayout({
     children,
     breadcrumbs = [],
@@ -15,6 +17,7 @@ export default function AppSidebarLayout({
                 <AppSidebarHeader breadcrumbs={breadcrumbs} />
                 {children}
             </AppContent>
+            <FlashMessages />
         </AppShell>
     );
 }
