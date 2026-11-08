@@ -1,0 +1,11 @@
+{
+    "preset": "laravel",
+    "notPath": [
+        "lang/it/actions.php",
+        "lang/it/auth.php",
+        "lang/it/http-statuses.php",
+        "lang/it/pagination.php",
+        "lang/it/passwords.php",
+        "lang/it/validation.php"
+    ]
+}
