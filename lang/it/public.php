@@ -115,4 +115,21 @@ return [
         'see_all' => 'Vedi tutti i prodotti',
         'faq_all' => 'Tutte le domande',
     ],
+
+    // Sprint 8 : pages de contenu (Chi siamo, Consegna, FAQ, pages légales)
+    'pages' => [
+        'contact_cta_title' => 'Hai bisogno di altre informazioni?',
+        'contact_cta_text' => 'Scrivici: ti risponderemo il prima possibile.',
+        'faq_title' => 'Domande frequenti',
+        'faq_other' => 'Altre domande',
+        'faq_empty' => 'Le domande frequenti saranno disponibili a breve.',
+        'updated_at' => 'Ultimo aggiornamento: :date',
+        'company_data' => 'Dati dell\'azienda',
+        'company_name' => 'Ragione sociale',
+        'company_address' => 'Sede',
+        'company_vat' => 'Partita IVA',
+        'company_tax_code' => 'Codice fiscale',
+        'company_rea' => 'REA',
+        'empty' => 'Contenuto in preparazione.',
+    ],
 ];

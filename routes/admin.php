@@ -3,7 +3,9 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ContentSectionController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\IdentityController;
+use App\Http\Controllers\Admin\LegalPageController;
 use App\Http\Controllers\Admin\PlaceholderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductImageController;
@@ -73,6 +75,7 @@ Route::middleware(['auth', 'admin.active'])->group(function () {
     // Paramètres (F-ASET) — sprint 6 : contacts et modèles du message « Ordina »
     Route::get('/impostazioni', [SettingController::class, 'index'])->name('settings.index');
     Route::put('/impostazioni/contatti-e-ordini', [SettingController::class, 'updateOrder'])->name('settings.order');
+    Route::put('/impostazioni/azienda', [SettingController::class, 'updateCompany'])->name('settings.company'); // sprint 8
 
     // Contenus (F-ACONT) — sprint 7. « identita » déclaré AVANT « {section} »
     Route::get('/contenuti', [ContentSectionController::class, 'index'])->name('content.index');
@@ -82,11 +85,25 @@ Route::middleware(['auth', 'admin.active'])->group(function () {
     Route::post('/contenuti/{section}', [ContentSectionController::class, 'update'])->name('content.update')->whereNumber('section'); // POST : fichiers
     Route::patch('/contenuti/{section}/visibilita', [ContentSectionController::class, 'toggleVisibility'])->name('content.visibility')->whereNumber('section');
 
+    // FAQ (F-AFAQ-01) — sprint 8
+    Route::get('/faq', [FaqController::class, 'index'])->name('faq.index');
+    Route::get('/faq/nuova', [FaqController::class, 'create'])->name('faq.create');
+    Route::post('/faq', [FaqController::class, 'store'])->name('faq.store');
+    Route::post('/faq/ordine', [FaqController::class, 'reorder'])->name('faq.reorder');
+    Route::get('/faq/{faq}/modifica', [FaqController::class, 'edit'])->name('faq.edit');
+    Route::put('/faq/{faq}', [FaqController::class, 'update'])->name('faq.update');
+    Route::delete('/faq/{faq}', [FaqController::class, 'destroy'])->name('faq.destroy');
+
+    // Pages légales (F-ALEG-01) — sprint 8. {page:id} car le modèle utilise le slug pour le site public
+    Route::get('/pagine-legali', [LegalPageController::class, 'index'])->name('legal.index');
+    Route::get('/pagine-legali/{page:id}/modifica', [LegalPageController::class, 'edit'])->name('legal.edit');
+    Route::put('/pagine-legali/{page:id}', [LegalPageController::class, 'update'])->name('legal.update');
+
     // Sections des sprints suivants : page provisoire (remplacée au fur et à mesure)
     // Sprint 4 : « prodotti » et « categorie » ont leurs vraies pages (plus haut)
-    // Sprints 6-7 : « impostazioni » et « contenuti » ont leurs vraies pages (plus haut)
+    // Sprints 6-8 : impostazioni, contenuti, faq et pagine-legali ont leurs vraies pages (plus haut)
     foreach ([
-        'faq' => 'faq', 'pagine-legali' => 'legal', 'messaggi' => 'messages',
+        'messaggi' => 'messages',
     ] as $uri => $name) {
         Route::get("/{$uri}", PlaceholderController::class)->name("{$name}.index")->defaults('section', $name);
     }

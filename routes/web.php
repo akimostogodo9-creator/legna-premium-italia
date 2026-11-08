@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\Public\ContentPageController;
+use App\Http\Controllers\Public\FaqController;
 use App\Http\Controllers\Public\HomeController;
+use App\Http\Controllers\Public\LegalPageController;
 use App\Http\Controllers\Public\PlaceholderController;
 use App\Http\Controllers\Public\ProductController;
 use App\Http\Controllers\Public\StatsController;
@@ -22,8 +25,15 @@ Route::post('/statistiche/clic', [StatsController::class, 'click'])
     ->middleware('throttle:60,1')
     ->name('stats.click');
 
-// Pages provisoires, remplacées au fil des sprints (S8 : chi-siamo, consegna, faq ; S9 : contatti)
-Route::get('/chi-siamo', PlaceholderController::class)->name('about');
-Route::get('/consegna', PlaceholderController::class)->name('delivery');
+// Pages de contenu (F-PAGE) — sprint 8
+Route::get('/chi-siamo', [ContentPageController::class, 'about'])->name('about');
+Route::get('/consegna', [ContentPageController::class, 'delivery'])->name('delivery');
+Route::get('/faq', FaqController::class)->name('faq');
+
+// Page provisoire, remplacée au sprint 9
 Route::get('/contatti', PlaceholderController::class)->name('contact');
-Route::get('/faq', PlaceholderController::class)->name('faq');
+
+// Pages légales : uniquement les 5 adresses prévues (R-LEG-01) — à garder EN DERNIER
+Route::get('/{slug}', LegalPageController::class)
+    ->whereIn('slug', LegalPageController::SLUGS)
+    ->name('legal.show');

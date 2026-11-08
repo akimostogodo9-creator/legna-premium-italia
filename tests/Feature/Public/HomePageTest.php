@@ -75,11 +75,11 @@ class HomePageTest extends TestCase
     {
         $this->get('/prodotti')->assertOk()->assertInertia(fn ($page) => $page->component('public/catalog')); // sprint 5
 
-        foreach (['/chi-siamo', '/consegna', '/contatti', '/faq'] as $url) {
-            $this->get($url)
-                ->assertOk()
-                ->assertInertia(fn ($page) => $page->component('public/placeholder'));
-        }
+        // Sprint 8 : vraies pages de contenu ; « contatti » reste provisoire jusqu'au sprint 9
+        $this->get('/chi-siamo')->assertOk()->assertInertia(fn ($page) => $page->component('public/about'));
+        $this->get('/consegna')->assertOk()->assertInertia(fn ($page) => $page->component('public/delivery'));
+        $this->get('/faq')->assertOk()->assertInertia(fn ($page) => $page->component('public/faq'));
+        $this->get('/contatti')->assertOk()->assertInertia(fn ($page) => $page->component('public/placeholder'));
     }
 
     public function test_aucun_panier_ni_paiement(): void

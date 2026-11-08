@@ -214,6 +214,20 @@ return [
         'test_hint' => 'Apre davvero la tua app di posta con l\'anteprima qui sopra.',
         'unknown_variable' => 'Variabile sconosciuta: :variables. Usa solo le variabili indicate.',
         'invalid_whatsapp' => 'Numero WhatsApp non valido: usa il prefisso internazionale (es. +39 340 123 4567).',
+        // Sprint 8 : données de l'entreprise
+        'company' => 'Dati dell\'azienda',
+        'company_hint' => 'Mostrati nel piè di pagina e nella pagina «Informazioni sull\'azienda» solo se compilati. Non inserire dati non verificati.',
+        'company_name' => 'Ragione sociale',
+        'company_address' => 'Sede legale (indirizzo completo)',
+        'company_vat' => 'Partita IVA',
+        'company_tax_code' => 'Codice fiscale',
+        'company_rea' => 'Numero REA (facoltativo)',
+        'company_phone' => 'Telefono',
+        'company_hours' => 'Orari (es. Lun–Ven 8:00–18:00)',
+        'delivery_area' => 'Zona di consegna',
+        'invalid_vat' => 'La Partita IVA non è valida (11 cifre, controllo non superato).',
+        'invalid_tax_code' => 'Il codice fiscale non è valido (11 cifre per un\'azienda, 16 caratteri per una persona).',
+        'invalid_phone' => 'Il numero di telefono può contenere solo cifre, spazi e i simboli + ( ) . / -',
     ],
 
     // Sprint 7 : contenus du site et identité visuelle
@@ -272,5 +286,33 @@ return [
         'footer_description' => 'Presentazione nel piè di pagina',
         'delivery_summary' => 'Riepilogo della consegna',
         'delivery_summary_hint' => 'Mostrato nella home e su ogni scheda prodotto (1–3 righe). Lascia vuoto se non hai ancora le informazioni.',
+    ],
+
+    // Sprint 8 : FAQ et pages légales
+    'faq' => [
+        'title' => 'Domande frequenti (FAQ)',
+        'new' => 'Nuova domanda',
+        'edit' => 'Modifica domanda',
+        'question' => 'Domanda',
+        'answer' => 'Risposta',
+        'topic' => 'Tema (es. Ordini, Consegna, Prezzi)',
+        'topic_hint' => 'Le domande con lo stesso tema sono raggruppate sulla pagina FAQ.',
+        'show_on_home' => 'Mostra nella home',
+        'active' => 'Pubblicata',
+        'inactive' => 'Non pubblicata',
+        'placeholder_warning' => 'Risposta da completare: questa domanda non deve essere pubblicata così.',
+    ],
+
+    'legal' => [
+        'title' => 'Pagine legali',
+        'intro' => 'Il testo delle pagine legali deve essere fornito o verificato da un professionista del diritto italiano. Una pagina vuota non viene pubblicata.',
+        'content' => 'Contenuto',
+        'published' => 'Pubblicata',
+        'unpublished' => 'Non pubblicata',
+        'empty' => 'Vuota',
+        'updated' => 'Ultimo aggiornamento',
+        'cannot_publish_empty' => 'Non puoi pubblicare una pagina vuota.',
+        'view' => 'Vedi sul sito',
+        'page_title' => 'Titolo della pagina',
     ],
 ];

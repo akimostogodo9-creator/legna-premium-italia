@@ -11,9 +11,28 @@ import settingsRoutes from '@/routes/admin/settings';
 type Values = Record<string, string | null>;
 type Props = {
     values: Values;
+    company: Values;
     variables: string[];
     sample: Record<string, string>;
 };
+
+// Sprint 8 (F-ASET-01) : données de l'entreprise — formulaire séparé, enregistré à part
+const COMPANY_FIELDS = [
+    'company_name',
+    'company_address',
+    'company_vat',
+    'company_tax_code',
+    'company_rea',
+    'company_phone',
+    'company_hours',
+    'delivery_area',
+] as const;
+type CompanyKey = (typeof COMPANY_FIELDS)[number];
+const MULTILINE: readonly CompanyKey[] = [
+    'company_address',
+    'company_hours',
+    'delivery_area',
+];
 
 const TEMPLATES = [
     ['order', 'settings.template_order'],
@@ -21,10 +40,20 @@ const TEMPLATES = [
     ['general', 'settings.template_general'],
 ] as const;
 
-// F-ASET-02/03/04/07 (sprint 6) : contacts, WhatsApp et modèles du message « Ordina » avec aperçu
-export default function SettingsIndex({ values, variables, sample }: Props) {
+// F-ASET-01 (azienda, sprint 8) et F-ASET-02/03/04/07 (sprint 6) : contacts, WhatsApp, modèles « Ordina »
+export default function SettingsIndex({
+    values,
+    company: companyValues,
+    variables,
+    sample,
+}: Props) {
     const t = useTranslations();
     const v = (key: string) => values[key] ?? '';
+    const company = useForm(
+        Object.fromEntries(
+            COMPANY_FIELDS.map((k) => [k, companyValues[k] ?? '']),
+        ) as Record<CompanyKey, string>,
+    );
     const form = useForm({
         order_email: v('order_email'),
         contact_email: v('contact_email'),
@@ -40,7 +69,15 @@ export default function SettingsIndex({ values, variables, sample }: Props) {
     });
     type Key = keyof typeof form.data;
 
-    useUnsavedChangesWarning(form.isDirty && !form.processing);
+    useUnsavedChangesWarning(
+        (form.isDirty && !form.processing) ||
+            (company.isDirty && !company.processing),
+    );
+
+    const submitCompany = (event: FormEvent) => {
+        event.preventDefault();
+        company.submit(settingsRoutes.company(), { preserveScroll: true });
+    };
 
     const submit = (event: FormEvent) => {
         event.preventDefault();
@@ -65,100 +102,151 @@ export default function SettingsIndex({ values, variables, sample }: Props) {
     return (
         <>
             <Head title={t('settings.title')} />
-            <form
-                onSubmit={submit}
-                className="flex max-w-5xl flex-col gap-10 p-4 md:p-8"
-            >
+            <div className="flex max-w-5xl flex-col gap-12 p-4 md:p-8">
                 <h1 className="text-2xl font-semibold">
                     {t('settings.title')}
                 </h1>
 
-                <section className="grid gap-5">
+                <form onSubmit={submitCompany} className="grid gap-5">
                     <h2 className="text-lg font-semibold">
-                        {t('settings.contacts')}
+                        {t('settings.company')}
                     </h2>
-                    {field('order_email', t('settings.order_email'), {
-                        type: 'email',
-                        hint: t('settings.order_email_hint'),
-                    })}
-                    {field('contact_email', t('settings.contact_email'), {
-                        type: 'email',
-                    })}
-                    {field('whatsapp_number', t('settings.whatsapp_number'), {
-                        inputMode: 'tel',
-                        hint: t('settings.whatsapp_hint'),
-                    })}
-                    <TextareaField
-                        id="whatsapp_message"
-                        rows={2}
-                        label={t('settings.whatsapp_message')}
-                        value={form.data.whatsapp_message}
-                        onChange={(e) =>
-                            form.setData('whatsapp_message', e.target.value)
-                        }
-                        error={form.errors.whatsapp_message}
-                    />
-                    <TemplateEditor
-                        id="whatsapp_product_message"
-                        rows={2}
-                        label={t('settings.whatsapp_product_message')}
-                        variables={variables}
-                        value={form.data.whatsapp_product_message}
-                        onChange={(val) =>
-                            form.setData('whatsapp_product_message', val)
-                        }
-                        error={form.errors.whatsapp_product_message}
-                    />
-                </section>
+                    <p className="text-sm text-muted-foreground">
+                        {t('settings.company_hint')}
+                    </p>
+                    {COMPANY_FIELDS.map((key) =>
+                        MULTILINE.includes(key) ? (
+                            <TextareaField
+                                key={key}
+                                id={key}
+                                rows={2}
+                                label={t(`settings.${key}`)}
+                                value={company.data[key]}
+                                onChange={(e) =>
+                                    company.setData(key, e.target.value)
+                                }
+                                error={company.errors[key]}
+                            />
+                        ) : (
+                            <TextField
+                                key={key}
+                                id={key}
+                                label={t(`settings.${key}`)}
+                                value={company.data[key]}
+                                onChange={(e) =>
+                                    company.setData(key, e.target.value)
+                                }
+                                error={company.errors[key]}
+                            />
+                        ),
+                    )}
+                    <Button
+                        type="submit"
+                        className="self-start"
+                        disabled={company.processing}
+                    >
+                        {t('actions.save')}
+                    </Button>
+                </form>
 
-                <section className="grid gap-10 border-t pt-8">
-                    <h2 className="text-lg font-semibold">
-                        {t('settings.templates')}
-                    </h2>
-                    {TEMPLATES.map(([kind, labelKey]) => {
-                        const subjectKey: Key = `${kind}_subject_template`;
-                        const bodyKey: Key = `${kind}_body_template`;
+                <form
+                    onSubmit={submit}
+                    className="flex flex-col gap-10 border-t pt-10"
+                >
+                    <section className="grid gap-5">
+                        <h2 className="text-lg font-semibold">
+                            {t('settings.contacts')}
+                        </h2>
+                        {field('order_email', t('settings.order_email'), {
+                            type: 'email',
+                            hint: t('settings.order_email_hint'),
+                        })}
+                        {field('contact_email', t('settings.contact_email'), {
+                            type: 'email',
+                        })}
+                        {field(
+                            'whatsapp_number',
+                            t('settings.whatsapp_number'),
+                            {
+                                inputMode: 'tel',
+                                hint: t('settings.whatsapp_hint'),
+                            },
+                        )}
+                        <TextareaField
+                            id="whatsapp_message"
+                            rows={2}
+                            label={t('settings.whatsapp_message')}
+                            value={form.data.whatsapp_message}
+                            onChange={(e) =>
+                                form.setData('whatsapp_message', e.target.value)
+                            }
+                            error={form.errors.whatsapp_message}
+                        />
+                        <TemplateEditor
+                            id="whatsapp_product_message"
+                            rows={2}
+                            label={t('settings.whatsapp_product_message')}
+                            variables={variables}
+                            value={form.data.whatsapp_product_message}
+                            onChange={(val) =>
+                                form.setData('whatsapp_product_message', val)
+                            }
+                            error={form.errors.whatsapp_product_message}
+                        />
+                    </section>
 
-                        return (
-                            <div
-                                key={kind}
-                                className="grid gap-4 lg:grid-cols-2"
-                            >
-                                <div className="grid min-w-0 gap-4">
-                                    <h3 className="font-semibold">
-                                        {t(labelKey)}
-                                    </h3>
-                                    {field(subjectKey, t('settings.subject'))}
-                                    <TemplateEditor
-                                        id={bodyKey}
-                                        label={t('settings.body')}
-                                        variables={variables}
-                                        value={form.data[bodyKey]}
-                                        onChange={(val) =>
-                                            form.setData(bodyKey, val)
-                                        }
-                                        error={form.errors[bodyKey]}
+                    <section className="grid gap-10 border-t pt-8">
+                        <h2 className="text-lg font-semibold">
+                            {t('settings.templates')}
+                        </h2>
+                        {TEMPLATES.map(([kind, labelKey]) => {
+                            const subjectKey: Key = `${kind}_subject_template`;
+                            const bodyKey: Key = `${kind}_body_template`;
+
+                            return (
+                                <div
+                                    key={kind}
+                                    className="grid gap-4 lg:grid-cols-2"
+                                >
+                                    <div className="grid min-w-0 gap-4">
+                                        <h3 className="font-semibold">
+                                            {t(labelKey)}
+                                        </h3>
+                                        {field(
+                                            subjectKey,
+                                            t('settings.subject'),
+                                        )}
+                                        <TemplateEditor
+                                            id={bodyKey}
+                                            label={t('settings.body')}
+                                            variables={variables}
+                                            value={form.data[bodyKey]}
+                                            onChange={(val) =>
+                                                form.setData(bodyKey, val)
+                                            }
+                                            error={form.errors[bodyKey]}
+                                        />
+                                    </div>
+                                    <OrderTemplatePreview
+                                        email={form.data.order_email}
+                                        subject={form.data[subjectKey]}
+                                        body={form.data[bodyKey]}
+                                        sample={sample}
                                     />
                                 </div>
-                                <OrderTemplatePreview
-                                    email={form.data.order_email}
-                                    subject={form.data[subjectKey]}
-                                    body={form.data[bodyKey]}
-                                    sample={sample}
-                                />
-                            </div>
-                        );
-                    })}
-                </section>
+                            );
+                        })}
+                    </section>
 
-                <Button
-                    type="submit"
-                    className="self-start"
-                    disabled={form.processing}
-                >
-                    {t('actions.save')}
-                </Button>
-            </form>
+                    <Button
+                        type="submit"
+                        className="self-start"
+                        disabled={form.processing}
+                    >
+                        {t('actions.save')}
+                    </Button>
+                </form>
+            </div>
         </>
     );
 }
