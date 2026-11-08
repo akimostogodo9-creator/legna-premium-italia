@@ -1,4 +1,5 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
+import { ExternalLink } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { ConfirmDialog } from '@/components/admin/confirm-dialog';
 import {
@@ -15,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { useUnsavedChangesWarning } from '@/hooks/use-unsaved-changes-warning';
 import { useTranslations } from '@/lib/i18n';
 import productRoutes from '@/routes/admin/products';
+import publicProducts from '@/routes/products';
 
 type Option = { id: number; name: string };
 type Product = {
@@ -286,6 +288,17 @@ export default function ProductForm({
 
                         <div className="grid gap-3 border-t pt-6">
                             <InputError message={errors.product} />
+                            {/* F-APROD-08 (sprint 5) : aperçu sur le site, même non publié (admin connecté) */}
+                            <Button type="button" variant="outline" asChild>
+                                <a
+                                    href={publicProducts.show(product.slug).url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <ExternalLink className="size-4" />{' '}
+                                    {t('products.view_on_site')}
+                                </a>
+                            </Button>
                             <Button
                                 type="button"
                                 variant={

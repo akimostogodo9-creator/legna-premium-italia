@@ -162,6 +162,8 @@ return [
         'unpublished_no_photo' => 'Il prodotto è stato ritirato dal sito perché non ha più foto.',
         'filter_status' => 'Stato',
         'filter_category' => 'Categoria',
+        // Sprint 5 (F-APROD-08) : aperçu sur le site, même non publié
+        'view_on_site' => 'Vedi sul sito',
     ],
 
     'photos' => [

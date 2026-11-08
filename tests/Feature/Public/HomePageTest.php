@@ -70,7 +70,9 @@ class HomePageTest extends TestCase
 
     public function test_les_liens_du_menu_ne_sont_pas_morts(): void
     {
-        foreach (['/prodotti', '/chi-siamo', '/consegna', '/contatti', '/faq'] as $url) {
+        $this->get('/prodotti')->assertOk()->assertInertia(fn ($page) => $page->component('public/catalog')); // sprint 5
+
+        foreach (['/chi-siamo', '/consegna', '/contatti', '/faq'] as $url) {
             $this->get($url)
                 ->assertOk()
                 ->assertInertia(fn ($page) => $page->component('public/placeholder'));
