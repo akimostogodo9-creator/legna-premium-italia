@@ -10,6 +10,7 @@ declare module 'react' {
 declare module '@inertiajs/core' {
     export interface InertiaConfig {
         sharedPageProps: {
+            // Admin : { name } seulement ; site public : SiteData complet (types/site.ts)
             site: { name: string };
             translations: Record<string, unknown>;
             auth: Auth;

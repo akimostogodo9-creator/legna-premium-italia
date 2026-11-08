@@ -129,6 +129,8 @@ TXT;
             ['identita', 'logo_dark', 'string', null],
             ['identita', 'favicon', 'string', null],
             ['identita', 'default_share_image', 'string', null],
+            // Sprint 3 : texte de présentation du footer (texte générique fourni par le dossier, modifiable)
+            ['identita', 'footer_description', 'text', 'Scopri la nostra selezione di legna da ardere e contattaci per ricevere informazioni sui prodotti e sulle modalità di consegna.'],
         ];
     }
 }

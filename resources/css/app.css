@@ -1,5 +1,10 @@
 @import 'tailwindcss';
 
+/* Sprint 3 : polices du site public hébergées dans le projet (aucun appel à Google — RGPD).
+   « standard » = graisse + largeur + taille optique (titres légèrement condensés). */
+@import '@fontsource-variable/bricolage-grotesque/standard.css';
+@import '@fontsource-variable/literata';
+
 @import 'tw-animate-css';
 
 @source '../views';
@@ -60,16 +65,62 @@
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
 
-    /* Palette Legna Premium Italia (CDC §4.2) — T9, sprint 0 */
-    --color-legno-900: #3b2418; /* Brun foncé : titres, éléments principaux */
-    --color-legno-700: #75462b; /* Brun bois : boutons, accents */
-    --color-crema-100: #f5efe5; /* Beige naturel : arrière-plans */
-    --color-crema-50: #fffcf7; /* Blanc cassé : sections principales */
-    --color-bosco-700: #344b36; /* Vert forêt : éléments secondaires */
-    --color-brace-500: #c98245; /* Orange chaleureux : accents, détails */
+    /* ─── Legna Premium Italia — tokens de la charte (CDC §4, sprint 3) ─── */
+    /* Palette du CDC §4.2 — une couleur = un rôle */
+    --color-legno-900: #3b2418; /* titres, footer, texte fort */
+    --color-legno-800: #5a3520; /* survol de l'action principale */
+    --color-legno-700: #75462b; /* action principale, liens */
+    --color-crema-200: #e9dfcf; /* bordures, séparateurs */
+    --color-crema-100: #f5efe5; /* fond des sections alternées */
+    --color-crema-50: #fffcf7; /* fond principal */
+    --color-bosco-800: #283b2a; /* survol WhatsApp */
+    --color-bosco-700: #344b36; /* WhatsApp, disponibilité */
+    --color-brace-600: #a9692f; /* détail sur fond clair (contraste suffisant) */
+    --color-brace-500: #c98245; /* détails : cernes, focus, prix */
 
-    /* Polices provisoires : le choix définitif et l'hébergement local se font au sprint 3 */
-    --font-display: Georgia, 'Times New Roman', serif;
+    /* Typographie : grotesque expressive (titres, interface) + serif de lecture (textes) */
+    --font-display:
+        'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+    --font-serif: 'Literata Variable', Georgia, 'Times New Roman', serif;
+
+    /* Rayons différents selon le rôle */
+    --radius-field: 0.75rem;
+    --radius-card: 1rem;
+    --radius-photo: 1.5rem;
+
+    /* Ombres brunes et douces (jamais grises) */
+    --shadow-card:
+        0 1px 2px rgb(59 36 24 / 0.06), 0 8px 24px -12px rgb(59 36 24 / 0.18);
+    --shadow-card-hover:
+        0 2px 4px rgb(59 36 24 / 0.08), 0 18px 40px -16px rgb(59 36 24 / 0.28);
+    --shadow-float: 0 10px 30px -10px rgb(59 36 24 / 0.45);
+
+    /* Animation du Hero (seul mouvement non déclenché par l'utilisateur).
+       Choix d'ISI : photo en arrière-plan → elle apparaît en fondu léger, puis le titre. */
+    --animate-hero-bg: hero-bg 1.4s cubic-bezier(0.2, 0.7, 0.1, 1) both;
+    --animate-hero-line: hero-line 0.8s cubic-bezier(0.2, 0.7, 0.1, 1) both;
+
+    @keyframes hero-bg {
+        from {
+            opacity: 0;
+            transform: scale(1.06);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @keyframes hero-line {
+        from {
+            opacity: 0;
+            transform: translateY(0.6em);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 }
 
 :root {
@@ -150,5 +201,81 @@
 
     body {
         @apply bg-background text-foreground;
+    }
+}
+
+/* ─── Styles de base du site public (sprint 3) ───
+   La classe « site » est posée sur le layout public uniquement : l'admin garde le style du kit. */
+@layer base {
+    .site {
+        background-color: var(--color-crema-50);
+        color: var(--color-legno-900);
+        font-family: var(--font-serif);
+        font-size: 1.0625rem;
+        line-height: 1.7;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .site :where(h1, h2, h3, h4) {
+        font-family: var(--font-display);
+        font-weight: 700;
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+        font-stretch: 92%;
+        text-wrap: balance;
+    }
+
+    .site :where(p) {
+        text-wrap: pretty;
+    }
+
+    .site :where(a, button, input, select, textarea, summary):focus-visible {
+        outline: 2px solid var(--color-brace-500);
+        outline-offset: 3px;
+        border-radius: 0.25rem;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .site *,
+        .site *::before,
+        .site *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+}
+
+/* Texte riche (descriptions, pages) : HTML déjà nettoyé par le serveur */
+@layer components {
+    .prose-legna {
+        max-width: 68ch;
+    }
+    .prose-legna > * + * {
+        margin-top: 1em;
+    }
+    .prose-legna h2 {
+        font-size: 1.6rem;
+        margin-top: 1.8em;
+    }
+    .prose-legna h3 {
+        font-size: 1.25rem;
+        margin-top: 1.5em;
+    }
+    .prose-legna ul {
+        list-style: disc;
+        padding-left: 1.25em;
+    }
+    .prose-legna ol {
+        list-style: decimal;
+        padding-left: 1.25em;
+    }
+    .prose-legna a {
+        color: var(--color-legno-700);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+    .prose-legna strong {
+        font-weight: 650;
     }
 }

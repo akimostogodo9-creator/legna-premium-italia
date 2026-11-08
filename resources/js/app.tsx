@@ -3,17 +3,19 @@ import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
+import PublicLayout from '@/layouts/public-layout';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Legna Premium Italia';
 
 void createInertiaApp({
-    title: (title) => (title ? `${title} - ${appName}` : appName),
+    // Un seul suffixe pour tout le site : « Prodotti | Legna Premium Italia » (sprint 3)
+    title: (title) => (title ? `${title} | ${appName}` : appName),
     // Layout choisi selon le dossier de la page :
-    // public/ → aucun (layout public au sprint 3) ; auth/ → connexion ; le reste → admin (menu latéral)
+    // public/ → site public (header, footer…) ; auth/ → connexion ; le reste → admin (menu latéral)
     layout: (name) => {
         switch (true) {
             case name.startsWith('public/'):
-                return null;
+                return PublicLayout;
             case name.startsWith('auth/'):
                 return AuthLayout;
             default:

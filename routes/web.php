@@ -1,10 +1,18 @@
 <?php
 
 use App\Http\Controllers\Public\HomeController;
+use App\Http\Controllers\Public\PlaceholderController;
 use Illuminate\Support\Facades\Route;
 
-// Site public (F-HOME) — page provisoire du sprint 0, contenu réel aux sprints 3 et 7
+/*
+| Site public — URLs en italien (étape 3 §2.1)
+| L'administration est dans routes/admin.php (/admin).
+*/
 Route::get('/', HomeController::class)->name('home');
 
-// L'administration est dans routes/admin.php (/admin).
-// Sprint 2 : les pages de paramètres du kit (routes/settings.php) sont remplacées par /admin/profilo.
+// Pages provisoires, remplacées au fil des sprints (S5 : prodotti ; S8 : chi-siamo, consegna, faq ; S9 : contatti)
+Route::get('/prodotti', PlaceholderController::class)->name('products.index');
+Route::get('/chi-siamo', PlaceholderController::class)->name('about');
+Route::get('/consegna', PlaceholderController::class)->name('delivery');
+Route::get('/contatti', PlaceholderController::class)->name('contact');
+Route::get('/faq', PlaceholderController::class)->name('faq');

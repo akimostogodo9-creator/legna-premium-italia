@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\Content\PublicSiteData;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -39,10 +40,10 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
 
-            'site' => [
-                'name' => config('app.name'),
-                // Coordonnées publiques : seulement si renseignées (R-CONTENU-03) — complété au sprint 3
-            ],
+            // Sprint 3 : données publiques (header, footer, WhatsApp) — inutiles dans l'admin
+            'site' => fn () => $isAdmin
+                ? ['name' => config('app.name')]
+                : app(PublicSiteData::class)->toArray(),
 
             // Textes d'interface de l'espace courant (lang/it/admin.php ou public.php)
             'translations' => fn () => trans($isAdmin ? 'admin' : 'public'),

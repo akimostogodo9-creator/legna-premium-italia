@@ -1,29 +1,39 @@
-import { Head } from '@inertiajs/react';
+import { FinalCta } from '@/components/public/home/final-cta';
+import type { FinalCtaContent } from '@/components/public/home/final-cta';
+import { Hero } from '@/components/public/home/hero';
+import type { HeroContent } from '@/components/public/home/hero';
+import { Presentation } from '@/components/public/home/presentation';
+import type { PresentationContent } from '@/components/public/home/presentation';
+import { WhyChooseUs } from '@/components/public/home/why-choose-us';
+import type { WhyContent } from '@/components/public/home/why-choose-us';
+import { Seo } from '@/components/public/seo';
 
 type Props = {
-    title: string;
-    text: string;
+    sections: {
+        hero?: HeroContent;
+        presentazione?: PresentationContent;
+        perche_sceglierci?: WhyContent;
+        cta_finale?: FinalCtaContent;
+    };
 };
 
-// Page d'accueil provisoire (sprint 0) — vérifie le rendu serveur et la palette
-export default function Home({ title, text }: Props) {
+// Page d'accueil v1 (sprint 3) — chaque section peut être masquée par l'admin (absente des props).
+// Le layout public (header, footer…) est ajouté automatiquement par app.tsx.
+export default function Home({ sections }: Props) {
     return (
         <>
-            <Head title={title} />
-            <main className="flex min-h-screen items-center justify-center bg-crema-100 px-4">
-                <div className="max-w-xl text-center">
-                    <p className="text-sm font-semibold tracking-widest text-brace-500 uppercase">
-                        Legna Premium Italia
-                    </p>
-                    <h1 className="mt-3 font-display text-4xl font-bold text-legno-900 md:text-5xl">
-                        {title}
-                    </h1>
-                    <p className="mt-4 text-lg text-legno-700">{text}</p>
-                    <span className="mt-8 inline-block rounded-full bg-bosco-700 px-5 py-2 text-sm text-crema-50">
-                        Laravel + Inertia + React
-                    </span>
-                </div>
-            </main>
+            <Seo
+                description={sections.hero?.subtitle ?? undefined}
+                image={sections.hero?.image ?? undefined}
+            />
+            {sections.hero && <Hero content={sections.hero} />}
+            {sections.presentazione && (
+                <Presentation content={sections.presentazione} />
+            )}
+            {sections.perche_sceglierci && (
+                <WhyChooseUs content={sections.perche_sceglierci} />
+            )}
+            {sections.cta_finale && <FinalCta content={sections.cta_finale} />}
         </>
     );
 }

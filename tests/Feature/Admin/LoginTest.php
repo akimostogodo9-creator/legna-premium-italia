@@ -60,6 +60,7 @@ class LoginTest extends TestCase
 
     public function test_l_inscription_publique_n_existe_pas(): void
     {
+        $this->withoutVite(); // sprint 3 : la 404 affiche la page d'erreur du site
         $this->get('/register')->assertNotFound();
         $this->post('/register', [])->assertNotFound();
         $this->get('/admin/register')->assertNotFound();
