@@ -4,6 +4,8 @@ namespace App\Http\Resources;
 
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Services\Ordering\OrderLinkBuilder;
+use App\Services\Ordering\WhatsAppLinkBuilder;
 use App\Support\ImagePresenter;
 use Illuminate\Http\Request;
 
@@ -28,6 +30,8 @@ class ProductDetailResource extends ProductCardResource
             'is_active' => $this->is_active,
             'meta_title' => $this->meta_title,
             'meta_description' => $this->meta_description ?? $this->short_description,
+            // R-WA-03 (sprint 6) : WhatsApp avec le nom du produit ; null sans numéro
+            'whatsapp_url' => app(WhatsAppLinkBuilder::class)->forProduct($this->resource, app(OrderLinkBuilder::class)),
         ];
     }
 

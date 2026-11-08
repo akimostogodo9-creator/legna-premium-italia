@@ -1,4 +1,13 @@
 // Données du catalogue envoyées par les Resources Laravel (sprint 5)
+
+/** Sprint 6 : message « Ordina » préparé par le serveur (OrderLinkBuilder) */
+export type OrderLink = {
+    email: string;
+    subject: string;
+    body: string;
+    label: string;
+    kind: 'order' | 'availability' | 'general';
+};
 export type ImageData = {
     src: string;
     srcset: string;
@@ -22,6 +31,8 @@ export type ProductCard = {
         label: string;
     };
     image: ImageData | null;
+    /** null si aucun e-mail de commande n'est configuré (bouton masqué) */
+    order: OrderLink | null;
 };
 
 export type ProductDetail = ProductCard & {
@@ -31,6 +42,8 @@ export type ProductDetail = ProductCard & {
     is_active: boolean;
     meta_title: string | null;
     meta_description: string | null;
+    /** null si aucun numéro WhatsApp n'est configuré */
+    whatsapp_url: string | null;
 };
 
 export type CategoryData = {

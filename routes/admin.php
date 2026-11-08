@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SaleUnitController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -67,11 +68,15 @@ Route::middleware(['auth', 'admin.active'])->group(function () {
     Route::patch('/foto/{image}', [ProductImageController::class, 'updateAlt'])->name('images.alt');
     Route::delete('/foto/{image}', [ProductImageController::class, 'destroy'])->name('images.destroy');
 
+    // Paramètres (F-ASET) — sprint 6 : contacts et modèles du message « Ordina »
+    Route::get('/impostazioni', [SettingController::class, 'index'])->name('settings.index');
+    Route::put('/impostazioni/contatti-e-ordini', [SettingController::class, 'updateOrder'])->name('settings.order');
+
     // Sections des sprints suivants : page provisoire (remplacée au fur et à mesure)
     // Sprint 4 : « prodotti » et « categorie » ont leurs vraies pages (plus haut)
+    // Sprint 6 : « impostazioni » a sa vraie page (plus haut)
     foreach ([
-        'contenuti' => 'content', 'faq' => 'faq', 'pagine-legali' => 'legal',
-        'impostazioni' => 'settings', 'messaggi' => 'messages',
+        'contenuti' => 'content', 'faq' => 'faq', 'pagine-legali' => 'legal', 'messaggi' => 'messages',
     ] as $uri => $name) {
         Route::get("/{$uri}", PlaceholderController::class)->name("{$name}.index")->defaults('section', $name);
     }

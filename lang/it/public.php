@@ -92,4 +92,21 @@ return [
         'preview' => 'Anteprima: questo prodotto non è pubblicato e i visitatori non lo vedono.',
         'breadcrumb' => 'Percorso',
     ],
+
+    // Sprint 6 : bouton « Ordina » et fenêtre d'aide
+    'order' => [
+        'order' => 'Ordina',
+        'ask_availability' => 'Chiedi disponibilità',
+        'help_title' => 'Stiamo aprendo la tua app di posta',
+        'help_text' => 'Il messaggio è già pronto: completa quantità e indirizzo, poi premi «Invia». Verrà inviato solo dopo aver premuto Invia.',
+        'help_fallback' => 'Non si è aperto nulla? Copia l\'indirizzo e il messaggio nella tua email, oppure scrivici su WhatsApp.',
+        'copy_address' => 'Copia indirizzo',
+        'copy_message' => 'Copia messaggio',
+        'copied' => 'Copiato!',
+        'copy_manual' => 'Seleziona il testo qui sotto e copialo.',
+        'whatsapp' => 'Scrivici su WhatsApp',
+        'close' => 'Chiudi',
+        'email_label' => 'Indirizzo email',
+        'message_label' => 'Messaggio',
+    ],
 ];

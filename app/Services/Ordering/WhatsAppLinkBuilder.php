@@ -2,18 +2,30 @@
 
 namespace App\Services\Ordering;
 
+use App\Models\Product;
 use App\Services\Settings\SettingsService;
 
 // R-WA-01→04 : lien wa.me avec message prérempli ; null si aucun numéro.
-// Prévu au sprint 6, avancé au sprint 3 pour le bouton flottant (le sprint 6 ajoutera le message produit).
+// Avancé au sprint 3 pour le bouton flottant ; message produit ajouté au sprint 6 (forProduct).
 class WhatsAppLinkBuilder
 {
-    public function __construct(private readonly SettingsService $settings) {}
+    public function __construct(
+        private readonly SettingsService $settings,
+        private readonly TemplateRenderer $renderer,
+    ) {}
 
     /** Lien général (bouton flottant, header, Contatti) ou null si pas de numéro. */
     public function general(): ?string
     {
         return $this->build($this->settings->get('whatsapp_message', ''));
+    }
+
+    /** R-WA-03 (sprint 6) : message mentionnant le produit (fiche produit, fenêtre d'aide). */
+    public function forProduct(Product $product, OrderLinkBuilder $orders): ?string
+    {
+        $template = (string) $this->settings->get('whatsapp_product_message', '');
+
+        return $this->build($this->renderer->render($template, $orders->values($product)));
     }
 
     /** Lien avec un message donné ; null si aucun numéro valide n'est configuré. */

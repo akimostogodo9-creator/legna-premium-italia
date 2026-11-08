@@ -1,14 +1,14 @@
 import { usePage } from '@inertiajs/react';
 import { ButtonLink } from '@/components/public/button-link';
 import { GrowthRings } from '@/components/public/growth-rings';
+import { OrderButton } from '@/components/public/order-button';
 import { WhatsAppIcon } from '@/components/public/whatsapp-icon';
 import { useTranslations } from '@/lib/i18n';
-import { contact } from '@/routes';
 import type { PublicPageProps } from '@/types/site';
 
 export type FinalCtaContent = { title: string; text?: string | null };
 
-// F-HOME-08 : invitation finale — contact (bouton Ordina au sprint 6) et WhatsApp si configuré
+// F-HOME-08 : invitation finale — e-mail général (sprint 6) et WhatsApp si configuré
 export function FinalCta({ content }: { content: FinalCtaContent }) {
     const t = useTranslations();
     const { site } = usePage<PublicPageProps>().props;
@@ -26,9 +26,8 @@ export function FinalCta({ content }: { content: FinalCtaContent }) {
                     </p>
                 )}
                 <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-                    <ButtonLink href={contact().url} variant="light">
-                        {t('actions.contact_us')}
-                    </ButtonLink>
+                    {/* Sprint 6 : e-mail général préparé si configuré, sinon lien vers Contatti */}
+                    <OrderButton order={site.general_order} onDark />
                     {site.contacts.whatsapp_url && (
                         <ButtonLink
                             href={site.contacts.whatsapp_url}

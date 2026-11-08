@@ -3,6 +3,7 @@
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\PlaceholderController;
 use App\Http\Controllers\Public\ProductController;
+use App\Http\Controllers\Public\StatsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,6 +16,11 @@ Route::get('/', HomeController::class)->name('home');
 Route::get('/prodotti', [ProductController::class, 'index'])->name('products.index');
 Route::get('/prodotti/categoria/{category:slug}', [ProductController::class, 'category'])->name('products.category');
 Route::get('/prodotti/{product:slug}', [ProductController::class, 'show'])->name('products.show');
+
+// R-STAT-03 (sprint 6) : clics anonymes sur « Ordina » / WhatsApp — 60 requêtes par minute et par adresse
+Route::post('/statistiche/clic', [StatsController::class, 'click'])
+    ->middleware('throttle:60,1')
+    ->name('stats.click');
 
 // Pages provisoires, remplacées au fil des sprints (S8 : chi-siamo, consegna, faq ; S9 : contatti)
 Route::get('/chi-siamo', PlaceholderController::class)->name('about');

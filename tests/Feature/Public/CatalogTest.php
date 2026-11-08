@@ -57,7 +57,7 @@ class CatalogTest extends TestCase
 
         $this->get('/prodotti')->assertInertia(fn ($page) => $page
             ->has('products.data.0', fn ($card) => $card
-                ->hasAll(['id', 'name', 'slug', 'url', 'short_description', 'category', 'price_label', 'unit', 'price_on_request', 'availability', 'image'])
+                ->hasAll(['id', 'name', 'slug', 'url', 'short_description', 'category', 'price_label', 'unit', 'price_on_request', 'availability', 'image', 'order']) // order : sprint 6
                 ->missing('meta_title')
                 ->missing('is_active')
                 ->missing('sort_order')));

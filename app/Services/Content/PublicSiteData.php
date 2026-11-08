@@ -3,6 +3,7 @@
 namespace App\Services\Content;
 
 use App\Models\Page;
+use App\Services\Ordering\OrderLinkBuilder;
 use App\Services\Ordering\WhatsAppLinkBuilder;
 use App\Services\Settings\SettingsService;
 use Illuminate\Support\Facades\Cache;
@@ -18,6 +19,7 @@ class PublicSiteData
     public function __construct(
         private readonly SettingsService $settings,
         private readonly WhatsAppLinkBuilder $whatsapp,
+        private readonly OrderLinkBuilder $orders,
     ) {}
 
     /** @return array<string, mixed> */
@@ -47,6 +49,8 @@ class PublicSiteData
                 'vat' => $this->settings->get('company_vat'),
             ],
             'legal_pages' => $this->legalPages(),
+            // F-ORD-07 (sprint 6) : « Contattaci » par e-mail (invitation finale, page Contatti) ; null sans e-mail
+            'general_order' => $this->orders->general(),
         ];
     }
 

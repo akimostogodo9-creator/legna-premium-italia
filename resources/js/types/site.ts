@@ -1,3 +1,5 @@
+import type { OrderLink } from './catalog';
+
 // Données publiques partagées par HandleInertiaRequests (PublicSiteData) — sprint 3
 export type SiteData = {
     name: string;
@@ -16,6 +18,8 @@ export type SiteData = {
         vat: string | null;
     };
     legal_pages: { title: string; url: string }[];
+    /** Sprint 6 : « Contattaci » par e-mail ; null sans e-mail de commande */
+    general_order: OrderLink | null;
 };
 
 export type PublicPageProps = { site: SiteData };

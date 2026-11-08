@@ -3,12 +3,15 @@ import { Truck } from 'lucide-react';
 import { AvailabilityBadge } from '@/components/public/availability-badge';
 import { Breadcrumb } from '@/components/public/breadcrumb';
 import { ButtonLink } from '@/components/public/button-link';
+import { MobileOrderBar } from '@/components/public/mobile-order-bar';
+import { OrderButton } from '@/components/public/order-button';
 import { Price } from '@/components/public/price';
 import { ProductGallery } from '@/components/public/product-gallery';
 import { ProductGrid } from '@/components/public/product-grid';
 import { ProductSpecs } from '@/components/public/product-specs';
 import { RichText } from '@/components/public/rich-text';
 import { Seo } from '@/components/public/seo';
+import { WhatsAppButton } from '@/components/public/whatsapp-button';
 import { useTranslations } from '@/lib/i18n';
 import { contact, delivery, home } from '@/routes';
 import products from '@/routes/products';
@@ -22,7 +25,7 @@ type Props = {
     deliverySummary: string | null;
 };
 
-// F-PROD-01→09 — le bouton « Ordina » et la barre mobile arrivent au sprint 6 (emplacement marqué)
+// F-PROD-01→09 — sprint 6 : bouton « Ordina », WhatsApp produit et barre mobile
 export default function ProductShow({
     product,
     preview,
@@ -107,11 +110,25 @@ export default function ProductShow({
                         )}
                     </div>
 
-                    {/* Sprint 6 : <OrderButton product={product} /> + WhatsApp + barre mobile */}
-                    <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                        <ButtonLink href={contact().url} variant="secondary">
-                            {t('actions.contact_us')}
-                        </ButtonLink>
+                    {/* ★ Sprint 6 : « Ordina » (ou « Contattaci » sans e-mail de commande), WhatsApp secondaire */}
+                    <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                        <OrderButton
+                            order={product.order}
+                            productId={product.id}
+                            whatsappUrl={product.whatsapp_url}
+                        />
+                        <WhatsAppButton
+                            url={product.whatsapp_url}
+                            productId={product.id}
+                        />
+                        {product.order && (
+                            <ButtonLink
+                                href={contact().url}
+                                variant="secondary"
+                            >
+                                {t('actions.contact_us')}
+                            </ButtonLink>
+                        )}
                     </div>
 
                     {deliverySummary && (
@@ -166,6 +183,16 @@ export default function ProductShow({
                     </div>
                 </section>
             )}
+
+            {/* F-PROD-05 : barre « Ordina » fixe sur téléphone + espace pour ne pas cacher le pied de page */}
+            <div className="h-24 lg:hidden" aria-hidden="true" />
+            <MobileOrderBar
+                order={product.order}
+                productId={product.id}
+                whatsappUrl={product.whatsapp_url}
+                priceLabel={product.price_label}
+                unit={product.unit}
+            />
         </>
     );
 }

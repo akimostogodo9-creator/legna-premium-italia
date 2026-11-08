@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Product;
+use App\Services\Ordering\OrderLinkBuilder;
 use App\Support\ImagePresenter;
 use App\Support\Money;
 use Illuminate\Http\Request;
@@ -10,7 +11,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * Carte produit (F-CAT-05) — contrat de l'étape 6 (08-09 §2).
- * La clé « order » (bouton Ordina) est ajoutée au sprint 6.
+ * Sprint 6 : clé « order » (bouton Ordina) ajoutée.
  *
  * @mixin Product
  */
@@ -35,6 +36,8 @@ class ProductCardResource extends JsonResource
                 'label' => $this->availability->label(),
             ],
             'image' => ImagePresenter::present($this->mainImage(), $this->name),
+            // ★ R-ORDINA : null si l'e-mail de commande n'est pas configuré
+            'order' => app(OrderLinkBuilder::class)->forProduct($this->resource),
         ];
     }
 }
