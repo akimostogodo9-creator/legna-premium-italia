@@ -46,6 +46,12 @@ class UserFactory extends Factory
         ]);
     }
 
+    /** Administrateur désactivé (R-ADM-02). */
+    public function inactive(): static
+    {
+        return $this->state(['is_active' => false]);
+    }
+
     /**
      * Indicate that the model has two-factor authentication configured.
      */

@@ -68,6 +68,8 @@ export default defineConfig({
             'composer.json',
             // Traductions générées par laravel-lang (php artisan lang:update) — sprint 0
             'lang/**',
+            // Dossier de conception du projet : jamais reformaté (sprint 1)
+            'docs/**',
             'resources/js/components/ui/*',
             'resources/views/mail/*',
         ],
