@@ -228,6 +228,12 @@ return [
         'invalid_vat' => 'La Partita IVA non è valida (11 cifre, controllo non superato).',
         'invalid_tax_code' => 'Il codice fiscale non è valido (11 cifre per un\'azienda, 16 caratteri per una persona).',
         'invalid_phone' => 'Il numero di telefono può contenere solo cifre, spazi e i simboli + ( ) . / -',
+        // Sprint 9 : formulaire de contact
+        'form' => 'Modulo di contatto',
+        'contact_form_enabled' => 'Mostra il modulo di contatto sul sito',
+        'contact_form_hint' => 'Il modulo appare solo se è attivo E se l\'email per i messaggi è compilata.',
+        'contact_rate_limit_per_hour' => 'Numero massimo di invii per ora (per visitatore)',
+        'contact_retention_months' => 'Conservazione dei messaggi (mesi)',
     ],
 
     // Sprint 7 : contenus du site et identité visuelle
@@ -314,5 +320,28 @@ return [
         'cannot_publish_empty' => 'Non puoi pubblicare una pagina vuota.',
         'view' => 'Vedi sul sito',
         'page_title' => 'Titolo della pagina',
+    ],
+
+    // Sprint 9 : messages reçus par le formulaire de contact
+    'messages_admin' => [
+        'title' => 'Messaggi di contatto',
+        'intro' => 'Richieste di informazioni ricevute dal sito. Non sono ordini: rispondi via email.',
+        'search' => 'Cerca per nome, email o testo',
+        'all' => 'Tutti',
+        'from' => 'Da',
+        'received' => 'Ricevuto il',
+        'subject' => 'Argomento',
+        'status' => 'Stato',
+        'reply' => 'Rispondi via email',
+        'mark_handled' => 'Segna come gestito',
+        'mark_read' => 'Segna come non gestito',
+        'delete_selected' => 'Elimina selezionati',
+        'select' => 'Seleziona il messaggio di :name',
+        'empty' => 'Nessun messaggio.',
+        'handled_by' => 'Gestito da :name il :date',
+        'reply_subject' => 'Re: la tua richiesta a :site',
+        'retention' => 'I messaggi vengono eliminati automaticamente dopo :months mesi (GDPR).',
+        'unread' => ':count non letti',
+        'pagination' => 'Pagine',
     ],
 ];

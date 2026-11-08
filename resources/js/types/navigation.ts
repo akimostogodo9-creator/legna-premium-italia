@@ -11,4 +11,6 @@ export type NavItem = {
     href: NonNullable<InertiaLinkProps['href']>;
     icon?: LucideIcon | null;
     isActive?: boolean;
+    /** Sprint 9 : petit compteur à côté du lien (ex. messages non lus) */
+    badge?: number;
 };

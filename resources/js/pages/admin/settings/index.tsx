@@ -1,6 +1,10 @@
 import { Head, useForm } from '@inertiajs/react';
 import type { FormEvent } from 'react';
-import { TextareaField, TextField } from '@/components/admin/fields';
+import {
+    CheckboxField,
+    TextareaField,
+    TextField,
+} from '@/components/admin/fields';
 import { OrderTemplatePreview } from '@/components/admin/order-template-preview';
 import { TemplateEditor } from '@/components/admin/template-editor';
 import { Button } from '@/components/ui/button';
@@ -12,6 +16,11 @@ type Values = Record<string, string | null>;
 type Props = {
     values: Values;
     company: Values;
+    form: {
+        contact_form_enabled?: boolean | null;
+        contact_rate_limit_per_hour?: number | null;
+        contact_retention_months?: number | null;
+    };
     variables: string[];
     sample: Record<string, string>;
 };
@@ -44,6 +53,7 @@ const TEMPLATES = [
 export default function SettingsIndex({
     values,
     company: companyValues,
+    form: formValues,
     variables,
     sample,
 }: Props) {
@@ -69,10 +79,27 @@ export default function SettingsIndex({
     });
     type Key = keyof typeof form.data;
 
+    // Sprint 9 (F-ASET-06) : formulaire de contact — troisième formulaire indépendant
+    const contactForm = useForm({
+        contact_form_enabled: formValues.contact_form_enabled ?? true,
+        contact_rate_limit_per_hour: String(
+            formValues.contact_rate_limit_per_hour ?? 5,
+        ),
+        contact_retention_months: String(
+            formValues.contact_retention_months ?? 24,
+        ),
+    });
+
     useUnsavedChangesWarning(
         (form.isDirty && !form.processing) ||
-            (company.isDirty && !company.processing),
+            (company.isDirty && !company.processing) ||
+            (contactForm.isDirty && !contactForm.processing),
     );
+
+    const submitContactForm = (event: FormEvent) => {
+        event.preventDefault();
+        contactForm.submit(settingsRoutes.form(), { preserveScroll: true });
+    };
 
     const submitCompany = (event: FormEvent) => {
         event.preventDefault();
@@ -144,6 +171,65 @@ export default function SettingsIndex({
                         type="submit"
                         className="self-start"
                         disabled={company.processing}
+                    >
+                        {t('actions.save')}
+                    </Button>
+                </form>
+
+                <form
+                    onSubmit={submitContactForm}
+                    className="grid gap-5 border-t pt-10"
+                >
+                    <h2 className="text-lg font-semibold">
+                        {t('settings.form')}
+                    </h2>
+                    <CheckboxField
+                        id="contact_form_enabled"
+                        label={t('settings.contact_form_enabled')}
+                        hint={t('settings.contact_form_hint')}
+                        checked={contactForm.data.contact_form_enabled}
+                        onChange={(v) =>
+                            contactForm.setData('contact_form_enabled', v)
+                        }
+                    />
+                    <div className="grid gap-5 sm:grid-cols-2">
+                        <TextField
+                            id="contact_rate_limit_per_hour"
+                            type="number"
+                            min={1}
+                            max={50}
+                            label={t('settings.contact_rate_limit_per_hour')}
+                            value={contactForm.data.contact_rate_limit_per_hour}
+                            onChange={(e) =>
+                                contactForm.setData(
+                                    'contact_rate_limit_per_hour',
+                                    e.target.value,
+                                )
+                            }
+                            error={
+                                contactForm.errors.contact_rate_limit_per_hour
+                            }
+                        />
+                        <TextField
+                            id="contact_retention_months"
+                            type="number"
+                            min={1}
+                            max={120}
+                            label={t('settings.contact_retention_months')}
+                            value={contactForm.data.contact_retention_months}
+                            onChange={(e) =>
+                                contactForm.setData(
+                                    'contact_retention_months',
+                                    e.target.value,
+                                )
+                            }
+                            error={contactForm.errors.contact_retention_months}
+                        />
+                    </div>
+                    <Button
+                        type="submit"
+                        className="self-start"
+                        disabled={contactForm.processing}
                     >
                         {t('actions.save')}
                     </Button>

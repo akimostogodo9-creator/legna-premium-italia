@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\ContactMessage;
 use App\Services\Content\PublicSiteData;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -57,6 +58,11 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),
             ],
+
+            // Sprint 9 : badge « messages non lus » du menu de l'admin (rien côté site public)
+            'admin' => fn () => $isAdmin && $request->user()
+                ? ['unread_messages' => ContactMessage::unread()->count()]
+                : null,
 
             // État du menu latéral (kit)
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',

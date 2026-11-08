@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\OrderSettingsRequest;
 use App\Services\Ordering\TemplateRenderer;
 use App\Services\Settings\SettingsService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -26,6 +27,8 @@ class SettingController extends Controller
             ],
             // Sprint 8 : données de l'entreprise (formulaire séparé)
             'company' => $this->settings->group('azienda'),
+            // Sprint 9 : formulaire de contact (activation, limite, conservation)
+            'form' => $this->settings->group('modulo'),
             'variables' => TemplateRenderer::VARIABLES,
             // Valeurs d'exemple pour l'aperçu uniquement (jamais affichées sur le site)
             'sample' => [
@@ -50,6 +53,23 @@ class SettingController extends Controller
     {
         $this->settings->setMany($request->validated());
         Cache::forget('legna.legal_pages');
+
+        return back()->with('success', __('admin.messages.saved'));
+    }
+
+    /** F-ASET-06 (sprint 9) : paramètres du formulaire de contact */
+    public function updateForm(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'contact_form_enabled' => ['boolean'],
+            'contact_rate_limit_per_hour' => ['required', 'integer', 'min:1', 'max:50'],
+            'contact_retention_months' => ['required', 'integer', 'min:1', 'max:120'],
+        ], [], [
+            'contact_rate_limit_per_hour' => __('admin.settings.contact_rate_limit_per_hour'),
+            'contact_retention_months' => __('admin.settings.contact_retention_months'),
+        ]);
+
+        $this->settings->setMany([...$data, 'contact_form_enabled' => $request->boolean('contact_form_enabled')]);
 
         return back()->with('success', __('admin.messages.saved'));
     }

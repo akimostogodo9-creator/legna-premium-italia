@@ -1,12 +1,12 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\ContentSectionController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\IdentityController;
 use App\Http\Controllers\Admin\LegalPageController;
-use App\Http\Controllers\Admin\PlaceholderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\Admin\ProfileController;
@@ -76,6 +76,7 @@ Route::middleware(['auth', 'admin.active'])->group(function () {
     Route::get('/impostazioni', [SettingController::class, 'index'])->name('settings.index');
     Route::put('/impostazioni/contatti-e-ordini', [SettingController::class, 'updateOrder'])->name('settings.order');
     Route::put('/impostazioni/azienda', [SettingController::class, 'updateCompany'])->name('settings.company'); // sprint 8
+    Route::put('/impostazioni/modulo', [SettingController::class, 'updateForm'])->name('settings.form'); // sprint 9
 
     // Contenus (F-ACONT) — sprint 7. « identita » déclaré AVANT « {section} »
     Route::get('/contenuti', [ContentSectionController::class, 'index'])->name('content.index');
@@ -99,12 +100,10 @@ Route::middleware(['auth', 'admin.active'])->group(function () {
     Route::get('/pagine-legali/{page:id}/modifica', [LegalPageController::class, 'edit'])->name('legal.edit');
     Route::put('/pagine-legali/{page:id}', [LegalPageController::class, 'update'])->name('legal.update');
 
-    // Sections des sprints suivants : page provisoire (remplacée au fur et à mesure)
-    // Sprint 4 : « prodotti » et « categorie » ont leurs vraies pages (plus haut)
-    // Sprints 6-8 : impostazioni, contenuti, faq et pagine-legali ont leurs vraies pages (plus haut)
-    foreach ([
-        'messaggi' => 'messages',
-    ] as $uri => $name) {
-        Route::get("/{$uri}", PlaceholderController::class)->name("{$name}.index")->defaults('section', $name);
-    }
+    // Messages de contact (F-AMSG) — sprint 9
+    Route::get('/messaggi', [ContactMessageController::class, 'index'])->name('messages.index');
+    Route::post('/messaggi/elimina', [ContactMessageController::class, 'destroyMany'])->name('messages.destroy-many');
+    Route::get('/messaggi/{message}', [ContactMessageController::class, 'show'])->name('messages.show')->whereNumber('message');
+    Route::patch('/messaggi/{message}/gestito', [ContactMessageController::class, 'toggleHandled'])->name('messages.handled')->whereNumber('message');
+    Route::delete('/messaggi/{message}', [ContactMessageController::class, 'destroy'])->name('messages.destroy')->whereNumber('message');
 });

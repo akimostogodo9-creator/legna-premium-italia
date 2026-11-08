@@ -15,6 +15,8 @@ declare module '@inertiajs/core' {
             translations: Record<string, unknown>;
             auth: Auth;
             flash: { success?: string | null; error?: string | null };
+            /** Sprint 9 : admin uniquement (null sur le site public) */
+            admin: { unread_messages: number } | null;
             sidebarOpen: boolean;
             [key: string]: unknown;
         };

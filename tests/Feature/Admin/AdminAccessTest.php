@@ -65,11 +65,15 @@ class AdminAccessTest extends TestCase
                 ->where('auth.user', ['id' => $user->id, 'name' => $user->name, 'email' => $user->email]));
     }
 
-    public function test_les_sections_futures_affichent_la_page_provisoire(): void
+    public function test_toutes_les_sections_du_menu_ont_leur_page(): void
     {
-        $this->actingAs(User::factory()->create())
-            ->get('/admin/messaggi') // sprint 8 : faq et pagine-legali ont maintenant leurs vraies pages
-            ->assertInertia(fn ($page) => $page->component('admin/placeholder')->where('section', 'messages'));
+        // Sprint 9 : plus aucune page provisoire dans l'admin
+        $this->actingAs(User::factory()->create());
+
+        foreach (['prodotti', 'categorie', 'contenuti', 'faq', 'pagine-legali', 'impostazioni', 'messaggi', 'utenti'] as $section) {
+            $response = $this->get("/admin/{$section}")->assertOk();
+            $this->assertNotSame('admin/placeholder', $response->viewData('page')['component'], $section);
+        }
     }
 
     public function test_les_pages_de_parametres_du_kit_n_existent_plus(): void
